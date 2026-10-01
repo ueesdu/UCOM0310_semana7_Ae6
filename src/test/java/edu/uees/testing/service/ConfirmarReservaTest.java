@@ -47,6 +47,24 @@ class ConfirmarReservaTest {
     }
 
     @Test
+    void reservaNoDisponibleNoSeGuardaNiNotifica() {
+        // Arrange: el Stub responde que no hay disponibilidad
+        when(disponibilidad.estaDisponible(any())).thenReturn(false);
+        Reserva reserva = new Reserva("R-002", "NORMAL");
+
+        // Act
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> servicio.confirmar(reserva));
+
+        // Assert
+        assertEquals("Horario no disponible", ex.getMessage());
+        assertEquals(EstadoReserva.PENDIENTE, reserva.getEstado());
+        verify(repository, never()).guardar(any());
+        verify(notificador, never()).enviarConfirmacion(any());
+    }
+
+    @Test
     void reservaNulaNoConsultaDependencias() {
         // Arrange: no hace falta configurar respuestas
 
