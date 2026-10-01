@@ -7,10 +7,13 @@ import edu.uees.testing.notification.Notificador;
 import edu.uees.testing.repository.ReservaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -77,6 +80,37 @@ class ConfirmarReservaTest {
         assertEquals("Reserva obligatoria", ex.getMessage());
         verify(disponibilidad, never()).estaDisponible(any());
         verify(repository, never()).guardar(any());
+        verify(notificador, never()).enviarConfirmacion(any());
+    }
+
+    @Test
+    void reservaSeGuardaAntesDeNotificar() {
+        // Arrange
+        when(disponibilidad.estaDisponible(any())).thenReturn(true);
+        Reserva reserva = new Reserva("R-003", "VIP");
+
+        // Act
+        servicio.confirmar(reserva);
+
+        // Assert: se consulta la misma reserva y el aviso sale despues de guardar
+        InOrder orden = inOrder(disponibilidad, repository, notificador);
+        orden.verify(disponibilidad).estaDisponible(reserva);
+        orden.verify(repository).guardar(reserva);
+        orden.verify(notificador).enviarConfirmacion(reserva);
+    }
+
+    @Test
+    void errorAlGuardarNoEnviaNotificacion() {
+        // Arrange
+        when(disponibilidad.estaDisponible(any())).thenReturn(true);
+        Reserva reserva = new Reserva("R-004", "NORMAL");
+        doThrow(new IllegalStateException("Base de datos no disponible"))
+                .when(repository).guardar(reserva);
+
+        // Act
+        assertThrows(IllegalStateException.class, () -> servicio.confirmar(reserva));
+
+        // Assert
         verify(notificador, never()).enviarConfirmacion(any());
     }
 }

@@ -1,25 +1,30 @@
-# UEES UCOM0310 — Semana 7 — Proyecto base Ae6
+# Semana 7 · Suite de pruebas del servicio de reservas (Ae6)
 
-Proyecto base para las actividades individuales de Semana 7.
+Pruebas unitarias de `ReservaService`: cancelación, descuentos y confirmación de reservas, con
+JUnit 5, Mockito y cobertura con JaCoCo.
 
 ## Requisitos
 - Java 21
 - Maven 3.9+
 - Git
 
-## Verificación inicial
+## Ejecutar las pruebas
 ```bash
 mvn clean test
 ```
+Resultado esperado: 23 pruebas, 0 fallos, `BUILD SUCCESS`.
 
 ## Cobertura
-```bash
-mvn clean test
-```
+`mvn clean test` también genera el reporte en `target/site/jacoco/index.html`.
 
-Luego abrir:
-`target/site/jacoco/index.html`
+## Estructura de las pruebas
+| Clase | Qué prueba |
+|---|---|
+| `service/ReservaServiceTest` | Cancelación (límites de 2 horas) y cálculo de descuentos, sin dobles de prueba |
+| `service/ConfirmarReservaTest` | `confirmar()` con Stub de disponibilidad y Mocks de repositorio y notificador |
+| `domain/ReservaTest` | Validaciones al crear una reserva |
 
-## Regla de trabajo
-No modifiques el código productivo solo para hacer pasar una prueba sin justificar el cambio.
-Primero diseña el caso, luego implementa la prueba y finalmente interpreta el resultado.
+## Documentación
+- `docs/01_MATRIZ_CASOS_PLANTILLA.md`: matriz de 22 casos.
+- `docs/02_ANALISIS_COBERTURA_PLANTILLA.md`: análisis de JaCoCo.
+- `docs/03_PULL_REQUEST_PLANTILLA.md`: descripción del Pull Request.
