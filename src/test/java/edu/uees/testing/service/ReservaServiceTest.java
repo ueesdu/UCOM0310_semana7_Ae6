@@ -161,4 +161,56 @@ class ReservaServiceTest {
         // Assert
         assertEquals("Total base inválido", ex.getMessage());
     }
+
+    // CP-12 (agregado a partir del análisis de JaCoCo)
+    @Test
+    void vipEnMinusculasRecibeQuincePorCiento() {
+        // Arrange
+        double totalBase = 100;
+
+        // Act
+        double total = servicio.calcularTotal("vip", totalBase);
+
+        // Assert
+        assertEquals(85.0, total, 0.001);
+    }
+
+    // CP-13
+    @Test
+    void tipoDesconocidoNoRecibeDescuento() {
+        // Arrange
+        double totalBase = 100;
+
+        // Act
+        double total = servicio.calcularTotal("CORPORATIVO", totalBase);
+
+        // Assert
+        assertEquals(100.0, total, 0.001);
+    }
+
+    // CP-14
+    @Test
+    void tipoNuloSeCobraSinDescuento() {
+        // Arrange
+        double totalBase = 100;
+
+        // Act
+        double total = servicio.calcularTotal(null, totalBase);
+
+        // Assert
+        assertEquals(100.0, total, 0.001);
+    }
+
+    // CP-15
+    @Test
+    void estudianteConTotalDecimalRecibeDiezPorCiento() {
+        // Arrange
+        double totalBase = 45.50;
+
+        // Act
+        double total = servicio.calcularTotal("ESTUDIANTE", totalBase);
+
+        // Assert
+        assertEquals(40.95, total, 0.001);
+    }
 }
