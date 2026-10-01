@@ -71,6 +71,32 @@ class ReservaServiceTest {
 
     // CP-05
     @Test
+    void tresHorasPermitenCancelar() {
+        // Arrange
+        int horas = 3;
+
+        // Act
+        boolean resultado = servicio.puedeCancelar(horas);
+
+        // Assert
+        assertTrue(resultado);
+    }
+
+    // CP-06
+    @Test
+    void horasNegativasNoPermitenCancelar() {
+        // Arrange
+        int horas = -1;
+
+        // Act
+        boolean resultado = servicio.puedeCancelar(horas);
+
+        // Assert
+        assertFalse(resultado);
+    }
+
+    // CP-07
+    @Test
     void normalNoRecibeDescuento() {
         // Arrange
         double totalBase = 100;
@@ -82,7 +108,7 @@ class ReservaServiceTest {
         assertEquals(100.0, total, 0.001);
     }
 
-    // CP-06
+    // CP-08
     @Test
     void vipRecibeQuincePorCiento() {
         // Arrange
@@ -95,7 +121,7 @@ class ReservaServiceTest {
         assertEquals(85.0, total, 0.001);
     }
 
-    // CP-07
+    // CP-09
     @Test
     void estudianteRecibeDiezPorCiento() {
         // Arrange
@@ -108,7 +134,7 @@ class ReservaServiceTest {
         assertEquals(90.0, total, 0.001);
     }
 
-    // CP-08
+    // CP-10
     @Test
     void totalCeroVipDevuelveCero() {
         // Arrange
@@ -121,7 +147,7 @@ class ReservaServiceTest {
         assertEquals(0.0, total, 0.001);
     }
 
-    // CP-09
+    // CP-11
     @Test
     void totalNegativoEsInvalido() {
         // Arrange
